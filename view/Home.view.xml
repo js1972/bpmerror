@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<mvc:View
+	controllerName="bpm.error.view.Home"
+	xmlns:mvc="sap.ui.core.mvc"
+	xmlns:l="sap.ui.layout"
+	xmlns:f="sap.ui.layout.form"
+	xmlns:core="sap.ui.core"
+	xmlns="sap.m">
+
+	<l:Grid
+		defaultSpan="L12 M12 S12"
+		width="auto">
+
+		<l:content>
+			<f:Form
+				id="form1"
+				minWidth="1024"
+				maxContainerCols="2">
+
+				<f:title>
+					<core:Title text="BPM Process Error (Status: {taskInfo>Status})" />
+				</f:title>
+				<f:layout>
+					<f:ResponsiveGridLayout
+						labelSpanL="3"
+						labelSpanM="3"
+						emptySpanL="4"
+						emptySpanM="4"
+						columnsL="1"
+						columnsM="1" />
+				</f:layout>
+
+				<f:formContainers>
+					<f:FormContainer>
+						<f:formElements>
+							<f:FormElement label="Process Id">
+								<f:fields>
+									<Text text="{ErrorManagementActionRequest_V01/OriginatingProcessID}" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="Process Name">
+								<f:fields>
+									<Text text="{ErrorManagementActionRequest_V01/OriginatingProcessName}" />
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="">
+								<f:fields>
+								</f:fields>
+							</f:FormElement>
+							<f:FormElement label="Error Text">
+								<f:fields>
+									<Text text="{ErrorManagementActionRequest_V01/ErrorText}" maxLines="10" />
+								</f:fields>
+							</f:FormElement>
+						</f:formElements>
+					</f:FormContainer>
+				</f:formContainers>
+
+			</f:Form>
+
+			<Bar>
+				<contentRight>
+					<Button
+						id="btnReprocess"
+						type="Accept"
+						tooltip="Re-process"
+						icon="sap-icon://redo"
+						press="onProcess">
+
+						<layoutData>
+							<FlexItemData growFactor="1" />
+						</layoutData>
+					</Button>
+					<Button
+						id="btnCancel"
+						type="Reject"
+						tooltip="Cancel process"
+						icon="sap-icon://sys-cancel"
+						press="onCancel">
+						<layoutData>
+							<FlexItemData growFactor="1" />
+						</layoutData>
+					</Button>
+				</contentRight>
+			</Bar>
+		</l:content>
+
+	</l:Grid>
+
+</mvc:View>
