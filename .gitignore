@@ -9,3 +9,5 @@ jslint_report.xml
 /dist
 /generated
 /scratch
+
+/model/Config.js
