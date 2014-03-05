@@ -10,6 +10,24 @@ The Gruntfile is configured to proxy resources from localhost to the BPM server.
 ## Getting Started
 Don't forget to run ```npm install``` after cloning this repo.
 
+There are 3 way to run this app.
+
+1. Deployed on your BPM server using the real BPM odata source
+2. On localhost for development using a mock odata source
+3. On localhost for development using a real BPM odata source
+
+### Deployed on BPM
+When the app is deployed on the BPM server authentication is handled by BPM. Deploying is a particularly slow process so you don't want to develop here.
+
+### Local Development
+When developing you really need to be able to code and run the app in real-time on your local machine. Its just too inefficient any other way.
+When running on localhost, we use Grunt as a build system. Enter ```grunt serve``` on the command line to start a Node.js web server and launch your app in the default browser.
+The Gruntfile includes settings:
+
+* The connect task sets up the Node.js web server. Enter your web roots as an array on connect.options.base. e.g. ```base: [".", "../sapui5"]``` will setup the web server to serve your app from the current directory and to also serve resources from ../sapui5 (where my SAPUI5 runtime is located).
+* When running on localhost and calling the BPM odata service we will run into CORS issues so we need a proxy. We use grunt-connect-proxy to proxy our odata calls from localhost to the BPM server (if you choose to work this way). This is configured in the connect task. By default this repo proxies resources from /bpmodata to the BPM server. We also have a proxy configured to send all sap ui5 resource reqests back to localhost. The point of this is that we can specify the one UI5 bootstrap url in the html file regardless of whether we run the app on localhost or on the bpm server.
+* If you want to completely mock the odata service - then run the app with the ?Responder=true query parameter. This will start up a sap.ui.core.util.MockServer to mock the odata responses. Note that the mockdata.js file contains the response strings. These can be collected from manually running the odata calls on the BPM server and then substituting you own values.
+
 ## Deploy to BPM server
 To deploy your app simply follow these manual steps (will add a grunt task to do this later):
 
