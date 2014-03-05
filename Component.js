@@ -6,7 +6,7 @@ Component details:
 	- Navigation: EventBus
 	
 */
-/*global bpm*/
+/*global bpm, metadataAsString, odataAsString*/
 (function() {
 	"use strict";
 
@@ -31,20 +31,60 @@ Component details:
 				}
 			});
 
-			/*
 			if (bpm.error.model.Config.isMock) {
 				jQuery.sap.require("sap.ui.app.MockServer");
-				var oMockServer = new sap.ui.app.MockServer({
-					rootUri: url
-				});
+				$.sap.require("bpm.error.model.mockdata");
+
+				/*
+				The sap.ui.core.util.MockServer.simulate() method does not seem to be
+				able to handle BPM odata requests due to the InputData('<taskId>') requests.
+				Instead we formulate our own mock responses below...
+				*/
+				//var oMockServer = new sap.ui.app.MockServer({
+				//	rootUri: url
+				//});
 				//oMockServer.simulate("model/metadata.xml", "model/");
-				oMockServer.simulate("model/metadata.xml", "model/mock.json");
+				//oMockServer.simulate("model/metadata.xml", "model/mock.json");
+
+				var oMockServer = new sap.ui.core.util.MockServer({
+					rootUri: "/bpmodata/taskdata.svc",
+					requests: [
+						{
+							method: "GET",
+							path: ".*metadata.*",
+							response: function(oXHR) {
+								console.log("*** metadata request to: " + oXHR.url + "***");
+								oXHR.respond(
+									200,
+									{
+										"Content-Type": "application/xml"
+									},
+									metadataAsString
+								);
+							}
+						},
+						{
+							method: "GET",
+							path: ".*InputData.*",
+							response: function(oXHR) {
+								console.log("*** odata request to: " + oXHR.url + "***");
+								oXHR.respond(
+									200,
+									{
+										"Content-Type": "application/json"
+									},
+									odataAsString
+								);
+							}
+						}
+					]
+				});
+
 				oMockServer.start();
 			}
-			*/
-			// set data model on root view
-			//oView.setModel(new sap.ui.model.json.JSONModel("model/mock.json"));
 
+			// set data model on root view
+			
 			/*
 			Example url to view input data:
 			http://app1pod.inpex.com.au:58200/bpmodata/taskdata.svc/aef45374a34a11e3b3910000313ae59a/InputData('aef45374a34a11e3b3910000313ae59a')?$format=json&$expand=ErrorManagementActionRequest_V01
