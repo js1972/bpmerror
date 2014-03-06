@@ -1,12 +1,9 @@
 /*
 Component details:
-	- Main Control: sap.m.TileContainer (wrapped in sap.m.Shell to center app on screen
-					and limit width - remove if you want a fullscreen app)
-	- Views: XML
-	- Navigation: EventBus
-	
+	Connect to OData source on NetWeaver BPM to enable completing a Task.
+	URL example: http://localhost:8080/?taskId=aef45374a34a11e3b3910000313ae59a&mockdata=true
 */
-/*global bpm, metadataAsString, odataAsString*/
+/*global bpm*/
 (function() {
 	"use strict";
 
@@ -31,66 +28,14 @@ Component details:
 				}
 			});
 
+			// start mock data server if required
 			if (bpm.error.model.Config.isMock) {
-				jQuery.sap.require("sap.ui.app.MockServer");
-				$.sap.require("bpm.error.model.mockdata");
-
-				/*
-				The sap.ui.core.util.MockServer.simulate() method does not seem to be
-				able to handle BPM odata requests due to the InputData('<taskId>') requests.
-				Instead we formulate our own mock responses below...
-				*/
-				//var oMockServer = new sap.ui.app.MockServer({
-				//	rootUri: url
-				//});
-				//oMockServer.simulate("model/metadata.xml", "model/");
-				//oMockServer.simulate("model/metadata.xml", "model/mock.json");
-
-				var oMockServer = new sap.ui.core.util.MockServer({
-					rootUri: "/bpmodata/taskdata.svc",
-					requests: [
-						{
-							method: "GET",
-							path: ".*metadata.*",
-							response: function(oXHR) {
-								console.log("*** metadata request to: " + oXHR.url + "***");
-								oXHR.respond(
-									200,
-									{
-										"Content-Type": "application/xml"
-									},
-									metadataAsString
-								);
-							}
-						},
-						{
-							method: "GET",
-							path: ".*InputData.*",
-							response: function(oXHR) {
-								console.log("*** odata request to: " + oXHR.url + "***");
-								oXHR.respond(
-									200,
-									{
-										"Content-Type": "application/json"
-									},
-									odataAsString
-								);
-							}
-						}
-					]
-				});
-
-				oMockServer.start();
+				$.sap.require("bpm.error.model.MockBPMServer");
+				var mockBPM = new bpm.error.model.MockBPMServer();
+				mockBPM.start();
 			}
 
-			// set data model on root view
-			
-			/*
-			Example url to view input data:
-			http://app1pod.inpex.com.au:58200/bpmodata/taskdata.svc/aef45374a34a11e3b3910000313ae59a/InputData('aef45374a34a11e3b3910000313ae59a')?$format=json&$expand=ErrorManagementActionRequest_V01
-			Example data to view task info:
-			http://app1pod.inpex.com.au:58200/bpmodata/tasks.svc/TaskCollection('aef45374a34a11e3b3910000313ae59a')?$format=json
-			*/
+			// Set data model on root view
 			if (window.location.host.indexOf("localhost") > -1) {
 				taskModel = new sap.ui.model.odata.ODataModel(url, true, "", "", {"Authorization": "Basic " + btoa(bpm.error.model.Config.getUser() + ":" + bpm.error.model.Config.getPwd())});
 				taskInfoModel = new sap.ui.model.odata.ODataModel(urlTaskInfo, true, "", "", {"Authorization": "Basic " + btoa(bpm.error.model.Config.getUser() + ":" + bpm.error.model.Config.getPwd())});
@@ -101,6 +46,8 @@ Component details:
 
 			oView.setModel(taskModel);
 			oView.setModel(taskInfoModel, "taskInfo");
+
+			// Let listeners know the task info model is ready
 			taskInfoModel.attachRequestCompleted({}, function() {
 				var bus = sap.ui.getCore().getEventBus();
 				bus.publish("events", "onTaskInfoReady");

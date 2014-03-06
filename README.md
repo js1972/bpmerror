@@ -26,7 +26,9 @@ The Gruntfile includes settings:
 
 * The connect task sets up the Node.js web server. Enter your web roots as an array on connect.options.base. e.g. ```base: [".", "../sapui5"]``` will setup the web server to serve your app from the current directory and to also serve resources from ../sapui5 (where my SAPUI5 runtime is located).
 * When running on localhost and calling the BPM odata service we will run into CORS issues so we need a proxy. We use grunt-connect-proxy to proxy our odata calls from localhost to the BPM server (if you choose to work this way). This is configured in the connect task. By default this repo proxies resources from /bpmodata to the BPM server. We also have a proxy configured to send all sap ui5 resource reqests back to localhost. The point of this is that we can specify the one UI5 bootstrap url in the html file regardless of whether we run the app on localhost or on the bpm server.
-* If you want to completely mock the odata service - then run the app with the ?Responder=true query parameter. This will start up a sap.ui.core.util.MockServer to mock the odata responses. Note that the mockdata.js file contains the response strings. These can be collected from manually running the odata calls on the BPM server and then substituting you own values.
+* If you want to completely mock the odata service - then run the app with the ?mockdata=true query parameter. This will start up a sap.ui.core.util.MockServer to mock the odata responses. Note that the mockdata.js file contains the response strings. These can be collected from manually running the odata calls on the BPM server and then substituting you own values (hint: use PostMan on Chrome).
+
+For local development execute the app with the url ```http://localhost:8080/?taskId=aef45374a34a11e3b3910000313ae59a&mockdata=true```.
 
 ## Deploy to BPM server
 To deploy your app simply follow these manual steps (will add a grunt task to do this later):
