@@ -19,34 +19,23 @@ module.exports = function(grunt) {
 		},
 
 
-		//qunit: {
-		//	all: {
-		//		src: ["test/**/*.html"]
-		//	}
-		//},
-
-
 		watch: {
 			gruntfile: {
 				files: "<%= jshint.gruntfile.src %>",
 				tasks: ["jshint:gruntfile"]
 			},
-			//qunit: {
-			//	files: ["<%= jshint.application.src %>", "<%= qunit.all.src %>"],
-			//	tasks: ["qunit"]
-			//},
 			application: {
 				files: "<%= jshint.application.src %>",
 				tasks: ["jshint:application"]
-			}  ,
-				livereload: {
-					options: {
-						livereload: "<%= connect.options.livereload %>"
-					},
-					//files: "<%= jshint.application.src %>" // Be careful to not watch npm dependencies
-					files: ["model/**/*.js", "util/**/*.js", "view/**/*.js", "*.js", "view/**/*.xml"  , "!model/ODataModelFakeService.js"
-					]
-				}
+			},
+			livereload: {
+				options: {
+					livereload: "<%= connect.options.livereload %>"
+				},
+				//files: "<%= jshint.application.src %>" // Be careful to not watch npm dependencies
+				files: ["model/**/*.js", "util/**/*.js", "view/**/*.js", "*.js", "view/**/*.xml"  , "!model/ODataModelFakeService.js"
+				]
+			}
 		},
 
 
@@ -132,7 +121,7 @@ module.exports = function(grunt) {
 
 
 	// These plugins provide necessary tasks
-	grunt.loadNpmTasks("grunt-contrib-qunit");
+	grunt.loadNpmTasks("grunt-karma");
 	grunt.loadNpmTasks("grunt-contrib-jshint");
 	grunt.loadNpmTasks("grunt-contrib-watch");
 	grunt.loadNpmTasks("grunt-open");
@@ -140,7 +129,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-connect-proxy");
 
 
-	grunt.registerTask("default", ["jshint", "qunit:all", "watch"]);
+	grunt.registerTask("default", ["jshint", "watch"]);
+
 	grunt.registerTask("serve", function() {
 		grunt.task.run([
 			"configureProxies",

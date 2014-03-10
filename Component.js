@@ -31,7 +31,9 @@ Component details:
 			// start mock data server if required
 			if (bpm.error.model.Config.isMock) {
 				$.sap.require("bpm.error.model.MockBPMServer");
+				//$.sap.require("bpm.error.model.mockbpmserver2.Component");
 				var mockBPM = new bpm.error.model.MockBPMServer();
+				//var mockBPM = new bpm.error.model.mockbpmserver2.Component();
 				mockBPM.start();
 			}
 
