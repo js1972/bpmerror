@@ -30,6 +30,12 @@ The Gruntfile includes:
 * When running on localhost and calling the BPM odata service we will run into CORS issues so we need a proxy. We use grunt-connect-proxy to proxy our odata calls from localhost to the BPM server (if you choose to work this way). This is configured in the connect task. By default this repo proxies resources from /bpmodata to the BPM server. We also have a proxy configured to send all sap ui5 resource reqests back to localhost. The point of this is that we can specify the one UI5 bootstrap url in the html file regardless of whether we run the app on localhost or on the bpm server.
 * If you want to completely mock the odata service - then run the app with the ?mockdata=true query parameter. This will start up a sap.ui.core.util.MockServer to mock each of the odata services (wrapped in module bpm.error.model.MockBPMServer). Note that the mockdata.js file contains the response strings. These can be collected from manually running the odata calls on the BPM server and then substituting you own values. Ensure you use this url when running with the mock server: ```http://localhost:8080/?taskId=f4f657eda02b11e3810b00002fc4e8fa&mockdata=true```.
 
+####Grunt tasks:####
+* grunt - runs jshint and watch
+* grunt serve - configures the proxies; start a web server on localhost; opens the app and watch
+* grunt test - configure the proxies; start a web server on localhost; opens the jasmin test page and watch
+* grunt all - configure the proxies; start a web web server on localhost; opens the app with mock data specified; opens the jasmin test page and watch.
+
 ## Deploy to BPM server
 To deploy your app simply follow these manual steps (will add a grunt task to do this later):
 
